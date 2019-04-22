@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Insert title here</title>
+    <script type="text/javascript" src="../js/jquery-1.11.3.min.js"></script>
+    <script type="text/javascript">
+        function insertUser() {
+            var username = $("#username").val();
+            var password = $("#password").val();
+            var confpassword = $("#confpassword").val();
+            var cid = $("#cid").val();
+
+            if (cid == null || cid == undefined || cid == "" || isNull(cid)) {
+                alert("请输入企业id");
+            } else if (compCheck(cid)) {
+                alert("企业id不存在,请查证后重新输入");
+            } else if (username == null || username == undefined || username == "" || isNull(username)) {
+                alert("请输入用户名");
+            } else if (password == null || password == undefined || password == "" || isNull(password)) {
+                alert("请输入密码");
+            } else if (password != confpassword) {
+                alert("两次输入的密码不同,请重新输入");
+            } else {
+                $.ajax({
+                    type: "post",
+                    url: "/server-report/user/insertUser",
+                    data: {
+                        username: username,
+                        password: password,
+                        cid:cid,
+                    },
+                    success: function (data) {
+                        window.close();
+                        window.location.href= "userIndex.html";
+
+                    }
+                });
+            }
+        }
+
+
+        /* 判断输入字符串是否为空或者全部都是空格 */
+        function isNull(str) {
+            if (str == "")
+                return true;
+            var regu = "^[ ]+$";
+            var re = new RegExp(regu);
+            return re.test(str);
+        }
+
+
+        //校验企业id是否存在
+        function compCheck(cid) {
+            var result;
+            $.ajax({
+                type: "post",
+                url: "/server-report/comp/compCheck",
+                async: false,
+                data: {cid: cid},
+                success: function (data) {
+                    if (data == 0) {
+                        result = true;
+                    } else {
+                        result = false;
+                    }
+                }
+            })
+            return result;
+        }
+    </script>
+</head>
+
+<body>
+
+<table >
+    <tr>
+        <td>所属企业id</td>
+        <td><input type="text" id="cid" name="cid"/></td>
+    </tr>
+    <tr>
+        <td>用户名</td>
+        <td><input type="text" id="username" name="username"/></td>
+    </tr>
+    <tr>
+        <td>密码</td>
+        <td><input type="password" id="password" name="password"/></td>
+    </tr>
+    <tr>
+        <td>再次输入密码</td>
+        <td><input type="password" id="confpassword" name="confpassword"/>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <button onclick="insertUser()">提交</button>
+        </td>
+    </tr>
+</table>
+</body>
+
+</html>

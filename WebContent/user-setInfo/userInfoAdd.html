@@ -1,0 +1,201 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>报表增加页面</title>
+    <script type="text/javascript" src="../js/jquery-1.11.3.min.js"></script>
+    <script type="text/javascript">
+
+        <!--选择的不同类型, 隐藏标签 -->
+        $(document).ready(function () {
+
+            $("#chartId").change(function () {
+
+                var chartId = $("#chartId").val();
+                if (chartId == 1) {
+                    $("#barSeriesName").show();
+                    $("#barSeriesValue").show();
+                    $("#barClassName").show();
+
+                    $("#pieValue").hide();
+                    $("#pieName").hide();
+                    $("#lineClassName").hide();
+                    $("#lineSeriesValue").hide();
+                    $("#lineSeriesName").hide();
+                } else if (chartId == 2) {
+                    $("#pieValue").show();
+                    $("#pieName").show();
+
+                    $("#barSeriesName").hide();
+                    $("#barSeriesValue").hide();
+                    $("#barClassName").hide();
+                    $("#lineClassName").hide();
+                    $("#lineSeriesValue").hide();
+                    $("#lineSeriesName").hide();
+
+                }else if(chartId == 3){
+                    $("#lineSeriesName").show();
+                    $("#lineSeriesValue").show();
+                    $("#lineClassName").show();
+
+                    $("#barSeriesName").hide();
+                    $("#barSeriesValue").hide();
+                    $("#barClassName").hide();
+                    $("#pieValue").hide();
+                    $("#pieName").hide();
+                }else if(chartId == 0){
+                    $("#lineSeriesName").show();
+                    $("#lineSeriesValue").show();
+                    $("#lineClassName").show();
+
+                    $("#barSeriesName").show();
+                    $("#barSeriesValue").show();
+                    $("#barClassName").show();
+                    $("#pieValue").show();
+                    $("#pieName").show();
+
+                }
+            })
+        })
+
+        <!--保存的方法-->
+        function insertUserInfo() {
+            var report_name = $("#report_name").val();
+            var catalog_name = $("#catalog_name").val();
+            var query = $("#query").val();
+            var report_sql = $("#report_sql").val();
+            var chart_sql = $("#chart_sql").val();
+            var series_name = $("#series_name").val();
+            var series_value = $("#series_value").val();
+            var class_name = $("#class_name").val();
+            var pie_name = $("#pie_name").val();
+            var pie_value = $("#pie_value").val();
+            var chartId = $("#chartId").val();
+
+            var lineSeriesName = $("#line_name").val();
+            var lineSeriesValue = $("#line_value").val();
+            var lineClassName = $("#line_className").val();
+             //必须要选择图表类型和查询条件
+            if(query == 0){
+                alert("请选择查询条件");
+
+            }else if(chartId == 0){
+                alert("请选择图形")
+            } else{
+
+            $.ajax({
+                type: "post",
+                url: "/server-report/userInfo/insertUserInfo",
+                data: {
+                    report_name: report_name,
+                    catalog_name: catalog_name,
+                    query: query,
+                    report_sql: report_sql,
+                    chart_sql: chart_sql,
+                    series_name: series_name,
+                    series_value: series_value,
+                    class_name: class_name,
+                    pie_name:pie_name,
+                    pie_value:pie_value,
+                    chartId:chartId,
+                    lineSeriesName:lineSeriesName,
+                    lineSeriesValue:lineSeriesValue,
+                    lineClassName:lineClassName
+
+                },
+                success: function (data) {
+                    window.close();
+                    window.open("userInfo.html");
+
+                }
+
+            })
+            }
+
+        }
+
+
+    </script>
+</head>
+
+<body>
+<table>
+    <tr>
+        <td>报表名字:</td>
+        <td><input name="report_name" id="report_name" value=""/></td>
+    </tr>
+    <tr>
+        <td>表头名字:</td>
+        <td><input type="text" id="catalog_name" size="100"/></td>
+    </tr>
+    <tr>
+        <td>查询条件:</td>
+        <td>
+            <select id="query">
+                <option value="0" selected="selected">---</option>
+                <option value="1">开始日期-结束日期</option>
+                <option value="2">日期查询</option>
+                <option value="3">模糊查询</option>
+            </select>
+        </td>
+    </tr>
+    <tr>
+        <td>表格SQL语句:</td>
+        <td><textarea rows="20" cols="130" id="chart_sql"></textarea></td>
+    </tr>
+    <tr>
+        <td>图形SQL语句:</td>
+        <td><textarea rows="20" cols="130" id="report_sql"></textarea></td>
+    </tr>
+    <tr>
+        <td>图形类型:</td>
+        <td>
+            <select id="chartId">
+                <option value="0" selected="selected">----</option>
+                <option value="1">柱状图</option>
+                <option value="2">饼状图</option>
+                <option value="3">折线图</option>
+            </select>
+        </td>
+    </tr>
+    <tr id="barSeriesName">
+        <td>柱状图系列名:</td>
+        <td><input id="series_name" type="text" size="100"/></td>
+    </tr>
+    <tr id="barSeriesValue">
+        <td>柱状图系列值:</td>
+        <td><input id="series_value" type="text" size="100"/></td>
+    </tr>
+    <tr id="barClassName">
+        <td>柱状图分类名:</td>
+        <td><input id="class_name" type="text" size="100"/></td>
+    </tr>
+    <tr id="pieName">
+        <td>饼图系列名:</td>
+        <td><input name="pie_name" id="pie_name"/></td>
+    </tr>
+    <tr id="pieValue">
+        <td>饼图系列值:</td>
+        <td><input name="pie_value" id="pie_value"/></td>
+    </tr>
+    <tr id="lineSeriesName">
+        <td>折线图系列名</td>
+        <td><input id="line_name"/></td>
+    </tr>
+    <tr id="lineSeriesValue">
+        <td>折线图系列值</td>
+        <td><input id="line_value"/></td>
+    </tr>
+    <tr id="lineClassName">
+        <td>折线图分类名</td>
+        <td><input id="line_className"/></td>
+    </tr>
+    <tr>
+        <button type="button" style="height:20px;width:100px;" onclick="insertUserInfo()">保存</button>
+    </tr>
+
+</table>
+</body>
+
+</html>

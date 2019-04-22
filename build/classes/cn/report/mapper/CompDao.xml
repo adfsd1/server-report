@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.report.mapper.CompDao">
+    <!--查询所有的用户 -->
+    <select id="compInfo" resultType="cn.report.domain.Company">
+        select
+        id,
+        cname,
+        SERVER_address,
+        type
+        from [company]
+    </select>
+
+
+    <!--增加企业的同时,返回企业的ID-->
+    <select id="compAdd" resultType="java.lang.Long" >
+
+        INSERT INTO [company](cname,server_address) values(#{cname},#{server_address})
+        SELECT SCOPE_IDENTITY();
+
+    </select>
+
+    <delete id="deleteUser" parameterType="java.lang.Long">
+        DELETE FROM [user] WHERE uid = #{userId}
+    </delete>
+
+    <select id="compCheck" parameterType="java.lang.Long" resultType="int">
+
+        SELECT count(1) FROM [company] where id = #{cid}
+
+    </select>
+
+
+    <!--根据用户的id 查询用户所属于企业的域名-->
+    <select id="getAddress" parameterType="java.lang.Long" resultType="java.lang.String">
+        select b.server_address from [user] a left join [company] b on a.cid = b.id where a.uid = #{id}
+    </select>
+
+	<!--根据用户的id 查询用户所属于企业的用友软件的类型-->
+    <select id="getType" parameterType="java.lang.Long" resultType="java.lang.String">
+        select b.type from [user] a left join [company] b on a.cid = b.id where a.uid = #{id}
+    </select>
+
+    <insert id="addImg">
+        INSERT INTO [img](imgName,cid) values(#{imgName},#{id})
+    </insert>
+
+
+    <select id="selectImg" parameterType="java.lang.Long" resultType="java.lang.String">
+        SELECT
+            imgName
+        FROM
+            [img]
+        WHERE
+            cid = #{cid}
+
+    </select>
+
+    <select id="deleteImg" parameterType="java.lang.Long">
+        DELETE FROM [img] WHERE cid = #{cid}
+
+    </select>
+
+    <select id="getByIdImg" parameterType="java.lang.Long" resultType="java.lang.String">
+        select a.imgName  from report.dbo.img a left join report.dbo.[user] b on a.cid = b.cid where b.uid = #{id}
+
+
+    </select>
+    <select id="byIdInfo" resultType="cn.report.domain.Company" parameterType="java.lang.Long">
+        select id, cname  ,server_address from report.dbo.company where id = #{cid}
+    </select>
+
+    <update id="updateComp" parameterType="cn.report.domain.Company">
+        update report.dbo.company set cname=#{cname},server_address=#{server_address} where id = #{id}
+    </update>
+
+	<select id="getAllReportContent" resultType="cn.report.domain.NewReport">
+        select report_id as reportId, 
+        	   report_name as reportName,
+        	   uid as uid,
+        	   report_icon as reportIcon,
+        	   websrc as websrc,
+        	   javasrc as javasrc
+        from report.dbo.report
+    </select>
+
+</mapper>

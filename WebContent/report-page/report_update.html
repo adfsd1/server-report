@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script type="text/javascript" src="../js/jquery-1.11.3.min.js"></script>
+    <script type="text/javascript" charset="utf-8">
+        window.onload = function uu() {
+            //页面初始加载修改企业的信息
+            /* $.ajax({
+                url: '/server-report/comp/byIdInfo',
+                type: 'post',
+                data: {
+                    cid: getQueryString("id")
+                },
+                dataType: 'json',
+                success: function (res) {
+                    $("#cname").val(res.cname);
+                    $("#cAddress").val(res.server_address);
+                    $("#id").val(res.id);
+
+
+                }
+
+            }) */
+            
+        	$("#reportId").val(getQueryString("reportId"));
+        	$("#reportName").val(getQueryString("reportName"));
+        	$("#reportIcon").val(getQueryString("reportIcon"));
+        	$("#uid").val(getQueryString("uid"));
+        	$("#websrc").val(getQueryString("websrc"));
+        	$("#javasrc").val(getQueryString("javasrc"));
+        } 
+        
+        //确认修改
+        function updateComp() {
+            $.ajax({
+                url:'/server-report/report/updateReport',
+                type:'post',
+                data:{
+                    reportId:$("#reportId").val(),
+                    reportName:$("#reportName").val(),
+                    reportIcon:$("#reportIcon").val(),
+                    uid:$("#uid").val(),
+                    websrc:$("#websrc").val(),
+                    javasrc:$("#javasrc").val()
+                },
+                success:function (res) {
+                    window.close();
+                    window.location.href="reportIndex.html";
+                    
+                }
+
+            })
+        }
+
+        //获取<a>标签的参数
+        function getQueryString(name) {
+            var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i");
+            var r = window.location.search.substr(1).match(reg);
+            if (r != null) return unescape(decodeURIComponent(r[2]));
+            return null;
+        }
+
+
+    </script>
+</head>
+<body>
+<table>
+    <tr>
+        <td>报表id</td>
+        <td><input id="reportId"  readonly="readonly" ></td>
+    </tr>
+    <tr>
+        <td>报表名称</td>
+        <td><input style="width: 300px" type="text" id="reportName"></td>
+    </tr>
+    <tr>
+        <td>报表图标</td>
+        <td><input style="width: 300px" type="text" id="reportIcon"></td>
+    </tr>
+    <tr>
+        <td>用户ID</td>
+        <td><input style="width: 300px" type="text" id="uid"></td>
+    </tr>
+    <tr>
+        <td>前端路径</td>
+        <td><input style="width: 300px" type="text" id="websrc"></td>
+    </tr>
+    <tr>
+        <td>后端路径</td>
+        <td><input style="width: 300px" type="text" id="javasrc"></td>
+    </tr>
+    <tr>
+        <td>
+            <button onclick="updateComp()">确认修改</button>
+        </td>
+    </tr>
+</table>
+</body>
+</html>

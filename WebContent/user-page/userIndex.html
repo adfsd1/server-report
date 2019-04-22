@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>用户页面</title>
+    <script type="text/javascript" src="../js/jquery-1.11.3.min.js"></script>
+    <script type="text/javascript">
+        window.onload = function queryUser() {
+            $.ajax({
+                type: 'get',
+                url: '/server-report/user/user',
+                dataType: 'json',
+                success: function (data) {
+                    var item;
+                    $.each(data, function (i, result) {
+                        item += "<tr><td>" + result['id'] + "</td><td>" + result['username'] + "</td><td>" + result['compName'] +
+                            "</td><td>" + result['cid'] + "</td><td><button onclick='deleteUser(" + result['id'] + ",\"" + result['username'] + "\")'>删除</button></td><td><button onclick='resetPW(" + result['id'] + ",\"" + result['username'] + "\")'>重置密码</button></td></tr>";
+                    });
+                    $('#tbodyitem').html(item);
+                },
+            });
+        }
+
+        /*根据id,删除用户  */
+        function deleteUser(userId, username) {
+            if (confirm("确定要用户" + username + "吗？")) {
+                $.ajax({
+                    type: 'POST',
+                    url: '/server-report/user/deleteUser',
+                    data: {
+                        userId: userId
+                    },
+                    dataType: 'json',
+                    success: function (data) {
+                        window.location.reload();
+                    }
+                });
+
+
+            } else {
+                return false;
+            }
+        }
+
+        // 初始化密码
+        function resetPW(userId, username) {
+            if (confirm("确定要为用户" + username + "重置密码吗?")) {
+                $.ajax({
+                    url:'/server-report/user/resetPW',
+                    async: false,
+                    type:'post',
+                    data:{
+                        userId:userId
+                    },
+                    dataType:'json',
+                    success:function (data) {
+                        alert(data.uu);
+                        
+                    }
+
+                })
+
+            } else {
+                return false;
+
+            }
+
+
+        }
+
+
+    </script>
+</head>
+
+<body>
+
+<table>
+    <tr>
+        <th><a href='../user-page/userAdd.html'>
+            <button>新增用户</button>
+        </a></th>
+    </tr>
+</table>
+<table border="1" cellspacing="0">
+    <thead>
+    <tr>
+        <th>编号</th>
+        <th>登录名</th>
+        <th>企业名字</th>
+        <th>所属企业的id</th>
+        <th>删除</th>
+        <th>重置密码</th>
+    </tr>
+    </thead>
+    <tbody id="tbodyitem">
+    </tbody>
+</table>
+
+</body>
+
+</html>

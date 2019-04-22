@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script type="text/javascript" src="../js/jquery-1.11.3.min.js"></script>
+    <script type="text/javascript">
+        window.onload = function uu() {
+            //页面初始加载修改企业的信息
+            $.ajax({
+                url: '/server-report/comp/byIdInfo',
+                type: 'post',
+                data: {
+                    cid: getQueryString("id")
+                },
+                dataType: 'json',
+                success: function (res) {
+                    $("#cname").val(res.cname);
+                    $("#cAddress").val(res.server_address);
+                    $("#id").val(res.id);
+
+
+                }
+
+            })
+
+
+        }
+
+        //确认修改
+        function updateComp() {
+            $.ajax({
+                url:'/server-report/comp/updateComp',
+                type:'post',
+                data:{
+                    cid:$("#id").val(),
+                    cname:$("#cname").val(),
+                    cAddress:$("#cAddress").val(),
+                },
+                success:function (res) {
+                    window.close();
+                    window.location.href="comp_info.html";
+                    
+                }
+
+            })
+        }
+
+        //获取<a>标签的参数
+        function getQueryString(name) {
+            var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i");
+            var r = window.location.search.substr(1).match(reg);
+            if (r != null) return unescape(r[2]);
+            return null;
+        }
+
+
+    </script>
+</head>
+<body>
+<table>
+    <tr>
+        <td>企业id</td>
+        <td><input id="id"  readonly="readonly" ></td>
+    </tr>
+    <tr>
+        <td>企业名</td>
+        <td><input style="width: 300px" type="text" id="cname"></td>
+    </tr>
+    <tr>
+        <td>服务器地址</td>
+        <td><input style="width: 300px" type="text" id="cAddress"></td>
+    </tr>
+    <tr>
+        <td>
+            <button onclick="updateComp()">确认修改</button>
+        </td>
+    </tr>
+</table>
+</body>
+</html>

@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="UTF-8">
+    <title>Insert title here</title>
+    <script type="text/javascript" src="../js/jquery-1.11.3.min.js"></script>
+    <script type="text/javascript">
+        function insertUser() {
+            var reportName = $("#reportName").val();
+            var reportIcon = $("#reportIcon").val();
+            var uid = $("#uid").val();
+            var websrc = $("#websrc").val();
+			var javasrc = $("#javasrc").val();
+            
+            if (reportName == null || reportName == undefined || reportName == "" || isNull(reportName)) {
+                alert("请输入报表名称");
+            } /* else if (compCheck(cid)) {
+                alert("企业id不存在,请查证后重新输入");
+            } */ else if (reportIcon == null || reportIcon == undefined || reportIcon == "" || isNull(reportIcon)) {
+                alert("请输入报表图标");
+            } else if (uid == null || uid == undefined || uid == "" || isNull(uid)) {
+                alert("请输入关联用户ID");
+            } else if (websrc == null || websrc == undefined || websrc == "" || isNull(websrc)) {
+                alert("请输入前端路径");
+            } else if(javasrc == null || javasrc == undefined || javasrc == "" || isNull(javasrc)){
+        		alert("请输入后端路径");
+        	}	
+            else {
+                $.ajax({
+                    type: "post",
+                    url: "/server-report/report/insertReport",
+                    data: {
+                        reportName: reportName,
+                        reportIcon: reportIcon,
+                        uid:uid,
+                        websrc: websrc,
+                        javasrc: javasrc
+                    },
+                    success: function (data) {
+                        window.close();
+                        window.location.href= "reportIndex.html";
+
+                    }
+                });
+            }
+        }
+
+
+        /* 判断输入字符串是否为空或者全部都是空格 */
+        function isNull(str) {
+            if (str == "")
+                return true;
+            var regu = "^[ ]+$";
+            var re = new RegExp(regu);
+            return re.test(str);
+        }
+
+
+        //校验企业id是否存在
+        function compCheck(cid) {
+            var result;
+            $.ajax({
+                type: "post",
+                url: "/server-report/comp/compCheck",
+                async: false,
+                data: {cid: cid},
+                success: function (data) {
+                    if (data == 0) {
+                        result = true;
+                    } else {
+                        result = false;
+                    }
+                }
+            })
+            return result;
+        }
+    </script>
+</head>
+
+<body>
+
+<table >
+    <tr>
+        <td>报表名称</td>
+        <td><input type="text" id="reportName" name="reportName"/></td>
+    </tr>
+    <tr>
+        <td>报表图标</td>
+        <td><input type="text" id="reportIcon" name="reportIcon"/></td>
+    </tr>
+    <tr>
+        <td>关联用户</td>
+        <td><input type="text" id="uid" name="uid"/></td>
+    </tr>
+    <tr>
+        <td>前端路径</td>
+        <td><input type="text" id="websrc" name="websrc"/>
+        </td>
+    </tr>
+    <tr>
+        <td>后端路径</td>
+        <td><input type="text" id="javasrc" name="javasrc"/>
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <button onclick="insertUser()">提交</button>
+        </td>
+    </tr>
+</table>
+</body>
+
+</html>

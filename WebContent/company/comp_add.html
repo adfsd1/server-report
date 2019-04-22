@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en" xmlns="http://java.sun.com/jsf/facelets">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <style type="text/css">
+
+
+    </style>
+    <script type="text/javascript" src="../js/jquery-1.11.3.min.js"></script>
+    <script type="text/javascript">
+        function insertComp() {
+
+            var formData = new FormData();
+
+            var cname = $("#cname").val();
+            var server_address = $("#server_address").val();
+            var img_file = document.getElementById("imgFile");
+
+
+            var imgSuffix = new Array();
+            for (var i = 0; i < img_file.files.length; i++) {
+                formData.append("imgFile", img_file.files[i]);
+                //后缀名
+                var index = img_file.files[i].name.lastIndexOf(".");
+                imgSuffix[i] = img_file.files[i].name.substring(index + 1, img_file.files[i].name.length).toLowerCase();
+            }
+
+            formData.append("cname", cname);
+            formData.append("server_address", server_address);
+
+
+            if (cname == null || cname == undefined || cname == "" || isNull(cname)) {
+                alert("请输入企业名");
+            } else if (server_address == null || server_address == undefined || server_address == "" || isNull(server_address)) {
+                alert("请输入服务器地址");
+            } else if (img_file.files.length == 0) {
+                alert("请上传图片");
+            } else if (img_file.files.length > 5 || img_file.files.length < 2) {
+                alert("请上传2-5张图片");
+            } else if (!checkImg(imgSuffix)) {
+                alert("图片格式不正确,请上传png格式或者jpg格式")
+            } else {
+                $.ajax({
+                    type: "post",
+                    url: "/server-report/comp/compAdd",
+                    async: false,
+                    processData: false,
+                    contentType: false, // 告诉jQuery不要去设置Content-Type请求头
+                    data: formData,
+                    success: function (data) {
+                        window.close();
+                        window.location.href = "comp_info.html";
+                    }
+
+                });
+
+            }
+        }
+
+        //图片格式判断
+        function checkImg(imgList) {
+
+            var result;
+            for (var i = 0; i < imgList.length; i++) {
+                if (imgList[i] == "jpg" || imgList[i] == "png") {
+                    result = true;
+                } else {
+                    result = false;
+                }
+            }
+            return result;
+
+        }
+
+        /* 判断输入字符串是否为空或者全部都是空格 */
+        function isNull(str) {
+            if (str == "")
+                return true;
+            var regu = "^[ ]+$";
+            var re = new RegExp(regu);
+            return re.test(str);
+        }
+
+    </script>
+</head>
+<body>
+<table>
+    <tr>
+        <td>企业名</td>
+        <td><input id="cname" style="width: 500px" name="cname"/></td>
+    </tr>
+    <tr>
+        <td>服务器地址</td>
+        <td><input type="text" style="width: 500px" id="server_address" name="server_address"/></td>
+    </tr>
+    <tr>
+        <td>轮播图</td>
+        <td><input id="imgFile" type="file" name="imgFile" multiple/></td>
+    </tr>
+
+    <tr>
+        <td>
+            <button onclick="insertComp()">提交</button>
+        </td>
+    </tr>
+</table>
+</body>
+</html>

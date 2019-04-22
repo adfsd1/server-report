@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>用户配置页面</title>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <!--表格样式-->
+    <style type="text/css">
+        .mytable {
+            table-layout: fixed;
+            width: 98%;
+            cellspacing:0;
+            border: 1px;
+        }
+
+        .mytable tr td {
+            text-overflow: ellipsis; /* for IE */
+            -moz-text-overflow: ellipsis; /* for Firefox,mozilla */
+            overflow: hidden;
+            white-space: nowrap;
+            text-align: center;
+        }
+
+
+    </style>
+    <script type="text/javascript" src="../js/jquery-1.11.3.min.js"></script>
+    <!--ajax和方法处理-->
+    <script type="text/javascript">
+        /*删除图表的方法*/
+        function deleteUserInfo(userInfoId, name) {
+            if (confirm("确定要报表" + name + "吗？")) {
+                $.ajax({
+                    type: 'POST',
+                    url: '/server-report/userInfo/deleteUserInfo',
+                    data: {
+                        userInfoId: userInfoId
+                    },
+                    dataType: 'json',
+                    success: function (data) {
+                        window.location.reload();
+                    }
+                });
+            } else {
+                return false;
+            }
+        }
+
+        /* 获取另一个页面超链接的值 */
+        function edit(name) {
+            var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+            var r = window.location.search.substr(1).match(reg);
+            if (r != null)
+                return unescape(r[2]);
+            return null;
+
+        }
+
+        var userId = edit("user_id");
+        /*传入id,根据id查询用户的配置信息  */
+        window.onload = function queryUserInfo() {
+            $.ajax({
+                type: 'get',
+                url: '/server-report/userInfo/userInfo',
+                data: {
+                    "userId": userId
+                },
+                dataType: 'json',
+                success: function (data) {
+                    var item;
+                    $.each(data, function (i, result) {
+                        // 讲queryid显示为中文
+                        var queryValue;
+                        if (result['queryId'] == 1){
+                            queryValue = "开始-结束日期"
+                        }else if(result['queryId'] == 2){
+                            queryValue = "单日期查询"
+                        }else if(result['queryId'] == 3){
+                            queryValue = "模糊查询"
+                        }
+                        //图表根据chartId显示中文
+                        var chartValue;
+                        if (result['chartId'] == 1){
+                            chartValue = "柱状图"
+                        }else if(result['chartId'] == 2){
+                            chartValue = "饼图"
+
+                        }else if(result['chartId'] == 3){
+                            chartValue = "折线图"
+
+                        }else{
+                            chartValue= "其他"
+                        }
+
+
+
+                        item += "<tr><td >" + result['id'] + "</td><td >"
+                            + result['name'] + "</td><td>"
+                            + result['tableColumn'] + "</td><td >"
+                            + result['reportSql'] + "</td><td>"
+                            + result['chartSql'] + "</td><td>"
+                            + queryValue + "</td><td>"
+                            + chartValue + "</td><td>"
+                            + result['seriesName'] + "</td><td>"
+                            + result['series'] + "</td><td>"
+                            + result['className'] + "</td><td>"
+                            + result['pieName'] + "</td><td>"
+                            + result['pieValue'] + "</td><td>"
+                            + result['lineSeriesName'] + "</td><td>"
+                            + result['lineSeriesValue'] + "</td><td>"
+                            + result['lineClassName'] + "</td><td><button onclick='deleteUserInfo(" + result['id'] + ",\"" + result['name'] + "\")'>删除</button></td></tr>"
+                    });
+                    $('#tbodyitem').html(item);
+
+                },
+            });
+        }
+    </script>
+
+</head>
+<body>
+<table>
+    <tr>
+        <th><a href='../user-setInfo/userInfoAdd.html'>
+            <button>新增报表</button>
+        </a></th>
+
+    </tr>
+</table>
+<table width="1500px" class="mytable" border="1" cellspacing="0">
+    <thead>
+    <tr>
+        <th>编号</th>
+        <th>表格名字</th>
+        <th>表头</th>
+        <th>表格SQL语句</th>
+        <th>图形SQL语句</th>
+        <th>高级查询</th>
+        <th>图形类型</th>
+        <th>柱状图系列名</th>
+        <th>柱状图系列值</th>
+        <th>柱状图分类名</th>
+        <th>饼图系列名</th>
+        <th>饼图系列值</th>
+        <th>折线图系列名</th>
+        <th>折线图系列值</th>
+        <th>折线图分类名</th>
+        <th>删除</th>
+
+    </tr>
+    </thead>
+    <tbody id="tbodyitem">
+
+    </tbody>
+</table>
+</body>
+</html>

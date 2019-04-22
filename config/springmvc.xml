@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:p="http://www.springframework.org/schema/p"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:mvc="http://www.springframework.org/schema/mvc"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+	http://www.springframework.org/schema/beans/spring-beans-4.0.xsd
+        http://www.springframework.org/schema/mvc 
+        http://www.springframework.org/schema/mvc/spring-mvc-4.0.xsd
+        http://www.springframework.org/schema/context 
+        http://www.springframework.org/schema/context/spring-context-4.0.xsd">
+    <!-- 配置Controller扫描 -->
+    <context:component-scan base-package="cn.report.controller"/>
+
+
+    <!-- 配置注解驱动 -->
+    <!-- 让DispatchServlet启动基于annotation的HandlerMapping -->
+    <mvc:annotation-driven>
+        <mvc:message-converters register-defaults="true">
+            <!-- 解决Controller返回json中文乱码问题 -->
+            <bean class="org.springframework.http.converter.StringHttpMessageConverter">
+
+                <property name="supportedMediaTypes">
+                    <list>
+                        <value>text/html;charset=UTF-8</value>
+                        <value>application/json;charset=UTF-8</value>
+                    </list>
+                </property>
+            </bean>
+        </mvc:message-converters>
+    </mvc:annotation-driven>
+    <!-- 解决静态资源无法被springMVC处理的问题 -->
+    <mvc:default-servlet-handler/>
+
+    <!--springmvc的拦截器-->
+    <mvc:interceptors>
+        <!--可以配置多个拦截器-->
+        <mvc:interceptor>
+            <mvc:mapping path="/company/*.html"/>
+
+            <mvc:mapping path="/user-page/*.html"/>
+            <mvc:mapping path="/user-setInfo/*.html"/>
+            <mvc:mapping path="/info.html"/>
+            <mvc:mapping path="/info_left.html"/>
+            <mvc:mapping path="/comp/compAdd"/>
+            <mvc:mapping path="/comp/selectImg"/>
+            <mvc:mapping path="/comp/updateImg"/>
+            <mvc:mapping path="/comp/info"/>
+            <mvc:mapping path="/comp/byIdInfo"/>
+            <mvc:mapping path="/user/insertUser"/>
+            <mvc:mapping path="/comp/compCheck"/>
+            <mvc:mapping path="/user/user"/>
+            <mvc:mapping path="/user/deleteUser"/>
+			
+
+
+
+
+            <!--自定义拦截器类-->
+            <bean class="cn.report.interceptor.Interceptor1"></bean>
+        </mvc:interceptor>
+    </mvc:interceptors>
+
+    <!--上传图片配置实现类  id名字为固定的-->
+    <bean id="multipartResolver" class="org.springframework.web.multipart.commons.CommonsMultipartResolver">
+        <!--上传图片的大小 最大上传尺寸 单位是b-->
+        <property name="maxUploadSize" value="5000000"></property>
+
+    </bean>
+
+    <!-- 配置视图解析器 -->
+    <bean class="org.springframework.web.servlet.view.InternalResourceViewResolver">
+        <!-- 前缀 -->
+        <property name="prefix" value="/web/"/>
+        <!-- 后缀 -->
+        <property name="suffix" value=".html"/>
+    </bean>
+</beans>

@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta charset="utf-8">
+    <title>报表页面</title>
+    <script type="text/javascript" src="../js/jquery-1.11.3.min.js"></script>
+    <script type="text/javascript" charset="utf-8">
+        window.onload = function queryUser() {
+            $.ajax({
+                type: 'get',
+                url: '/server-report/report/getAllReportContent',
+                dataType: 'json',
+                success: function (data) {
+                    var item;
+                    $.each(data, function (i, result) {
+                        item += "<tr><td>" + result['reportId'] + "</td><td>" + decodeURIComponent(encodeURIComponent(result['reportName']))+ "</td><td>" + result['reportIcon'] +
+                            "</td><td>" + result['uid'] + "</td><td>" + result['websrc'] + 
+                            "</td><td>" + result['javasrc'] +
+                            "</td><td><button onclick='deleteReport(" + result['reportId'] + 
+                            		",\"" + result['reportName'] + "\")'>删除</button></td>"+
+                            		"<td><a href='report_update.html?reportId=" + result['reportId'] + 
+                            				"&reportName="+encodeURIComponent(result['reportName'])+
+                            				"&reportIcon="+result['reportIcon']+
+                            				"&uid="+result['uid']+
+                            				"&websrc="+result['websrc']+
+                            				"&javasrc="+result['javasrc']+"'>修改信息</a></td></tr>";
+                    });
+                    $('#tbodyitem').html(item);
+                },
+            });
+        }
+
+        /*根据id,删除用户  */
+        function deleteReport(reportId, reportName) {
+            if (confirm("确定要删除报表" + reportName + "吗？")) {
+                $.ajax({
+                    type: 'POST',
+                    url: '/server-report/report/deleteReport',
+                    data: {
+                        reportId: reportId
+                    },
+                    dataType: 'json',
+                    success: function (data) {
+                        window.location.reload();
+                    }
+                });
+
+
+            } else {
+                return false;
+            }
+        }
+
+        // 初始化密码
+        function resetPW(userId, username) {
+            if (confirm("确定要为用户" + username + "重置密码吗?")) {
+                $.ajax({
+                    url:'/server-report/user/resetPW',
+                    async: false,
+                    type:'post',
+                    data:{
+                        userId:userId
+                    },
+                    dataType:'json',
+                    success:function (data) {
+                        alert(data.uu);
+                        
+                    }
+
+                })
+
+            } else {
+                return false;
+
+            }
+
+
+        }
+
+
+    </script>
+</head>
+
+<body>
+
+<table>
+    <tr>
+        <th><a href='../report-page/reportAdd.html'>
+            <button>新增报表</button>
+        </a></th>
+    </tr>
+</table>
+<table border="1" cellspacing="0">
+    <thead>
+    <tr>
+        <th>编号</th>
+        <th>报表名称</th>
+        <th>icon名字</th>
+        <th>所属用户的id</th>
+        <th>前端跳转的页面</th>
+        <th>后端接口路径</th>
+        <th>删除</th>
+        <th>修改</th>
+    </tr>
+    </thead>
+    <tbody id="tbodyitem">
+    </tbody>
+</table>
+
+</body>
+
+</html>

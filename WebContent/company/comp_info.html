@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+    <script type="text/javascript" src="../js/jquery-1.11.3.min.js"></script>
+    <style type="text/css">
+        a{
+            text-decoration:none;  /*超链接无下划线*/
+        }
+    </style>
+    <script type="text/javascript">
+
+        window.onload = function queryUser() {
+            $.ajax({
+                type: 'get',
+                url: '/server-report/comp/info',
+                dataType: 'json',
+                success: function (data) {
+                    var item;
+                    $.each(data, function (i, result) {
+                        item += "<tr><td>" + result['id'] + "</td> <td>" + result['cname'] + "</td> <td>" + result['server_address']
+                            + "</td><td><a href='comp_img.html?id=" + result['id'] + "'>修改轮播图</a></td><td><a href='comp_update.html?id=" + result['id'] + "'>修改信息</a></td></tr>";
+                    });
+                    $('#tbodyitem').html(item);
+                },
+            });
+        }
+
+    </script>
+</head>
+<body>
+<table>
+    <tr>
+        <th><a href='../company/comp_add.html'>
+            <button>新增企业</button>
+        </a></th>
+    </tr>
+</table>
+<table border="1" cellspacing="0">
+    <thead>
+    <tr>
+        <th>编号</th>
+        <th>企业名</th>
+        <th>服务器地址</th>
+        <th>轮播图操作</th>
+        <th>信息修改</th>
+    </tr>
+    </thead>
+    <tbody id="tbodyitem">
+    </tbody>
+</table>
+
+</body>
+</html>

@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="cn.report.mapper.UserInfoDao">
+    <!--查询用户的配置信息  -->
+    <select id="questUserInfo" resultType="cn.report.domain.UserInfo">
+		select
+		   id,
+		   name,
+		   table_column as tableColumn,
+		   report_sql as reportSql,
+		   chart_sql as chartSql,
+		   series,
+		   queryId,
+		   chartId,
+		   seriesName,
+		   className,
+		   pieName,
+		   pieValue,
+		   lineSeriesName,
+		   lineSeriesValue,
+		   lineClassName
+	    from [user_info]
+	</select>
+    <!--增加图表  -->
+    <insert id="insertInfoUser" parameterType="cn.report.domain.UserInfo">
+		
+		INSERT INTO [user_info](name,table_column,queryId,report_sql,chart_sql,seriesName,series,className,pieName,pieValue,chartId,lineSeriesName,lineSeriesValue,lineClassName) values(#{name},#{tableColumn},#{queryId},#{reportSql},#{chartSql},#{seriesName},#{series},#{className},#{pieName},#{pieValue},#{chartId},#{lineSeriesName},#{lineSeriesValue},#{lineClassName})
+	
+	
+	</insert>
+
+    <delete id="deleteUserInfo" parameterType="java.lang.Long">
+		DELETE FROM [user_info] WHERE id = #{userInfoId}
+	</delete>
+
+
+</mapper>
